@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+
+from time import sleep
+import os
+import sys
+import requests
+
+funcoes = {"adicionar" : "<post>/Tarefa",
+            "listar" : "<get>/Tarefa",
+            "buscar" : "<get>/Tarefa/<id>",
+            "apagar" : "<delete>/Tarefa/<id>",
+            "atualizar" : "<put>/Tarefa/<id>"}
+
+working = True
+
+while (working == True):
+
+    if (sys.argv[1] in funcoes.keys()):
+
+        endpoint = funcoes[sys.argv[1]]
+        response = ""
+
+        try:
+            if "<id>" not in endpoint:
+
+                if "<post>" in endpoint:
+                    endpoint = endpoint.replace("<post>", os.environ["WEBSERVERIP"])
+                    payload = {'atributo1' : '%s' % sys.argv[2], 'atributo2' : '%s' % sys.argv[3]}
+                    response = requests.post(endpoint, data=payload)
+
+                    print(response.text)
+
+                    if response.status_code == 200:
+                        print('Success!')
+                    elif response.status_code == 404:
+                        print('Not Found.')
+
+                elif "<get>" in endpoint:
+                    endpoint = endpoint.replace("<get>", os.environ["WEBSERVERIP"])
+                    response = requests.get(endpoint)
+
+                    print(response.text)
+
+                    if response.status_code == 200:
+                        print('Success!')
+                    elif response.status_code == 404:
+                        print('Not Found.')
+
+            else:
+
+                endpoint = endpoint.replace("<id>", str(sys.argv[2]))
+
+                if "<put>" in endpoint:
+                    endpoint = endpoint.replace("<put>", os.environ["WEBSERVERIP"])
+                    payload = {'atributo1' : '%s' % sys.argv[3], 'atributo2' : '%s' % sys.argv[4]}
+                    response = requests.put(endpoint, data=payload)
+
+                    print(response.text)
+
+                    if response.status_code == 200:
+                        print('Success!')
+                    elif response.status_code == 404:
+                        print('Not Found.')
+
+                elif "<delete>" in endpoint:
+                    endpoint = endpoint.replace("<delete>", os.environ["WEBSERVERIP"])
+                    response = requests.delete(endpoint)
+
+                    print(response.text)
+
+                    if response.status_code == 200:
+                        print('Success!')
+                    elif response.status_code == 404:
+                        print('Not Found.')
+
+                elif "<get>" in endpoint:
+                    endpoint = endpoint.replace("<get>", os.environ["WEBSERVERIP"])
+                    response = requests.get(endpoint)
+
+                    print(response.text)
+
+                    if response.status_code == 200:
+                        print('Success!')
+                    elif response.status_code == 404:
+                        print('Not Found.')
+
+            working = False
+
+        except requests.exceptions.ConnectionError:
+            print("Connection refused, instance probably still initializing...")
+            sleep(5)
+            print("Try Again")
+
+        continue
+
+    elif "help" in sys.argv[1]:
+        working = False
+        print("""
+
+            Use cases:
+
+            ----------------------------------
+            tarefa adicionar <attribute1> <attribute2>
+            adds item to database with attribute1 and attribute2
+
+            attribute1: ONLY the string with the 1st attribute of the task being added
+            attribute2: ONLY the string with the 2nd attribute of the task being added
+
+            example: tarefa adicionar banana abacate
+            in this case the command would interpret "banana" as attribute1 and "abacate" as attribute2
+            ----------------------------------
+
+            ----------------------------------
+            tarefa listar
+            takes nothing, returns database
+
+            example: tarefa listar
+            in this case will return a dictionary with the database information
+            ----------------------------------
+
+            ----------------------------------
+            tarefa buscar <id>
+            gets database item with the unique identifier id
+
+            id: the index of the item to be returned from the database; should be an integer
+
+            example: tarefa buscar 2
+            in this case, the item whose index is the integer 2 will be returned
+            ----------------------------------
+
+            ----------------------------------
+            tarefa apagar <id>
+            deletes database item with the unique identifier id
+
+            id: the index of the item to be deleted from the database; should be an integer
+
+            example: tarefa apagar 3
+            in this case, the item whose index is the integer 3 will be deleted
+            ----------------------------------
+
+            ----------------------------------
+            tarefa atualizar <id> <attribute1> <attribute2>
+            updates database item with the unique identifier id, changing its attribute1 and attribute2
+
+            id: the index of the task to be updated from the database; should be an integer
+            attribute1: ONLY the string with the 1st attribute of the task being updated
+            attribute2: ONLY the string with the 2nd attribute of the task being updated
+
+            example: tarefa update 4 brownie coolaid
+            in this case, item 4's attribute1 will become "brownie" and it's attribute2 will become "coolaid"
+            ----------------------------------""")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pass
